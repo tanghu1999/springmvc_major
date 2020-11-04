@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.th.dao.IDeptDao">
+
+    <resultMap id="treeOneMap" type="treeOne">
+        <id column="id" property="id" />
+        <result property="title" column="title" />
+        <collection property="children" ofType="treeOne">
+            <id property="id" column="eid" />
+            <result property="title" column="ename" />
+        </collection>
+
+    </resultMap>
+
+
+    <select id="findAll" resultMap="treeOneMap">
+    SELECT dept.deptid id,deptname title,empno eid,ename FROM dept INNER JOIN emp ON dept.deptid=emp.deptid
+
+  </select>
+
+    <select id="findAll2" resultType="treeTwo">
+        SELECT deptid id,deptname title,pdeptid pid FROM dept
+
+    </select>
+
+
+
+
+</mapper>

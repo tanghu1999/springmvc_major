@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.th.dao.IMajorDao">
+  <resultMap id="MajorMap" type="major">
+    <id property="mid" column="mid" />
+    <result property="mname" column="mname" />
+    <result property="credit" column="credit" />
+    <result property="lifeYear" column="lifeYear" />
+    <result property="introduction" column="introduction" />
+    <result property="cid" column="cid" />
+    <result property="cname" column="cname" />
+
+  </resultMap>
+
+  <select id="findByPage" parameterType="parameters" resultMap="MajorMap">
+    SELECT mid,mname,credit,lifeYear,introduction,major.cid,college.cname cname
+    FROM major INNER JOIN college ON major.cid=college.cid
+    <where>
+      <if test="cid!=null and cid!=-1">
+        major.cid=#{cid}
+      </if>
+      <if test="mname!=null and mname.trim().length()>0">
+        AND mname LIKE "%"#{mname}"%" <!-- 相当于 "%"'xxx'"%"-->
+      </if>
+      <if test="minCredit!=null and maxCredit!=null">
+        AND credit BETWEEN #{minCredit} AND #{maxCredit}
+      </if>
+    </where>
+    order by mid
+
+  </select>
+
+  <insert id="insert" parameterType="major">
+    INSERT INTO major(mname,credit,lifeYear,introduction,cid) VALUES(#{mname},#{credit},#{lifeYear},#{introduction},#{cid})
+  </insert>
+
+  <delete id="delete" parameterType="string">
+    DELETE FROM major WHERE mid=#{mid}
+  </delete>
+
+  <select id="findById" parameterType="string" resultType="major">
+    SELECT mid,mname,credit,lifeYear,introduction,cid FROM major WHERE mid=#{mid}
+  </select>
+
+  <update id="update" parameterType="major">
+    UPDATE major
+    <set>
+      <if test="mname!=null">
+        mname=#{mname},
+      </if>
+      <if test="credit!=null">
+        credit=#{credit},
+      </if>
+      <if test="lifeYear!=null">
+        lifeYear=#{lifeYear},
+      </if>
+      <if test="introduction!=null">
+        introduction=#{introduction},
+      </if>
+      <if test="cid!=null">
+        cid=#{cid},
+      </if>
+        mid=#{mid}
+        WHERE mid=#{mid}
+    </set>
+
+  </update>
+
+  <delete id="deleteMany" parameterType="int[]">
+    DELETE FROM major WHERE mid IN
+    <foreach collection="array" item="id" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+  </delete>
+
+
+</mapper>
